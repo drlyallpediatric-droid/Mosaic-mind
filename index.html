@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOSAIC MIND — An Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEE6D3;
+    --paper-dim:#E3D8BE;
+    --paper-deep:#DCCFAF;
+    --ink:#24211A;
+    --ink-soft:#5B5747;
+    --rule:#C9BCA0;
+    --card-shadow: 0 1px 0 rgba(36,33,26,0.06), 0 8px 20px -12px rgba(36,33,26,0.35);
+
+    --c-research:#2F5D42;
+    --c-advocacy:#5B6B2F;
+    --c-theory:#9C6B1F;
+    --c-myth:#4A3B78;
+    --c-fiction:#7A2E33;
+    --c-thought:#2B5C6B;
+    --c-culture:#A0522D;
+    --c-history:#7A5A32;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Serif 4', Georgia, serif;
+    background-image:
+      radial-gradient(rgba(36,33,26,0.035) 1px, transparent 1px);
+    background-size: 3px 3px;
+    min-height:100vh;
+  }
+
+  .display{font-family:'Special Elite', 'Courier New', monospace; letter-spacing:0.02em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  a{color:inherit;}
+
+  /* ===== Masthead ===== */
+  header.masthead{
+    border-bottom:3px double var(--ink);
+    padding: 28px 28px 20px;
+    background: var(--paper);
+    position: sticky;
+    top:0;
+    z-index: 40;
+  }
+  .masthead-inner{
+    max-width: 1180px;
+    margin:0 auto;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .brand h1{
+    font-size: clamp(28px, 4vw, 42px);
+    margin:0 0 4px;
+    letter-spacing: 0.03em;
+  }
+  .brand p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-style: italic;
+  }
+  .search-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:6px;
+  }
+  .search-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  #searchInput{
+    width: min(320px, 60vw);
+    background: var(--paper-dim);
+    border: 1px solid var(--ink);
+    padding: 9px 12px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+  }
+  #searchInput:focus{ background: #fff; }
+
+  /* ===== Layout ===== */
+  .layout{
+    max-width:1180px;
+    margin: 0 auto;
+    display:grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    align-items:start;
+  }
+
+  /* ===== Drawer tabs (sidebar nav) ===== */
+  nav.drawers{
+    position: sticky;
+    top: 96px;
+    padding: 24px 16px 40px 28px;
+    border-right: 1px solid var(--rule);
+  }
+  nav.drawers .drawer-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.18em;
+    color:var(--ink-soft);
+    margin-bottom:14px;
+  }
+  .tab{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    border-left: 3px solid transparent;
+    padding: 8px 4px 8px 10px;
+    margin-bottom:2px;
+    cursor:pointer;
+    font-family:'Source Serif 4', serif;
+    font-size:14.5px;
+    color:var(--ink);
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .tab:hover{ background: var(--paper-dim); }
+  .tab.active{
+    background: var(--paper-deep);
+    border-left-color: var(--tab-color, var(--ink));
+    font-weight:600;
+  }
+  .tab .swatch{
+    width:9px; height:9px; border-radius:50%;
+    background: var(--tab-color, var(--ink-soft));
+    flex-shrink:0;
+  }
+  .tab .count{
+    margin-left:auto;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+
+  /* ===== Main content ===== */
+  main{ padding: 32px 28px 80px; min-height: 70vh; }
+
+  .section-head{
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-head h2{
+    font-family:'Special Elite', monospace;
+    font-size: 22px;
+    margin: 0 0 6px;
+  }
+  .section-head p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:14px;
+    max-width: 62ch;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  /* ===== Card ===== */
+  .card{
+    position:relative;
+    background: #F6F1E4;
+    border: 1px solid var(--rule);
+    box-shadow: var(--card-shadow);
+    padding: 18px 16px 16px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .card:hover{ transform: translateY(-2px); box-shadow: 0 2px 0 rgba(36,33,26,0.08), 0 14px 26px -14px rgba(36,33,26,0.45); }
+  .card:focus-visible{ outline: 2px solid var(--ink); outline-offset:2px; }
+
+  .stamp{
+    position:absolute;
+    top: -10px;
+    right: -8px;
+    transform: rotate(6deg);
+    border: 2px solid var(--stamp-color, var(--ink));
+    color: var(--stamp-color, var(--ink));
+    font-family:'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding: 3px 6px;
+    background: rgba(246,241,228,0.92);
+    line-height:1.3;
+    text-align:center;
+    max-width: 140px;
+  }
+
+  .card .index{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color: var(--ink-soft);
+  }
+  .card h3{
+    font-size:17px;
+    margin:2px 0 0;
+    line-height:1.3;
+  }
+  .card .byline{
+    font-size:12px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .card .excerpt{
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.5;
+    margin-top:2px;
+  }
+  .card .meta-row{
+    margin-top:auto;
+    padding-top:8px;
+    border-top: 1px dashed var(--rule);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  /* ===== About / legend bar ===== */
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    margin-bottom:24px;
+    padding: 14px 16px;
+    background: var(--paper-dim);
+    border:1px solid var(--rule);
+    font-size:12px;
+  }
+  .legend .item{ display:flex; align-items:center; gap:7px; }
+  .legend .dot{ width:9px;height:9px;border-radius:50%; }
+
+  /* ===== Detail overlay ===== */
+  .overlay{
+    position:fixed; inset:0;
+    background: rgba(20,18,12,0.55);
+    display:none;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 40px 16px;
+    overflow-y:auto;
+    z-index:100;
+  }
+  .overlay.open{ display:flex; }
+  .detail-card{
+    background:#F8F4E9;
+    max-width: 760px;
+    width:100%;
+    border:1px solid var(--ink);
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
+    padding: 34px 34px 40px;
+    position:relative;
+  }
+  .detail-card .close-btn{
+    position:absolute;
+    top:14px; right:14px;
+    background:none;
+    border:1px solid var(--ink-soft);
+    width:30px;height:30px;
+    cursor:pointer;
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .detail-card .close-btn:hover{ background:var(--paper-dim); }
+  .detail-stamp{
+    display:inline-block;
+    border: 2px solid var(--stamp-color, var(--ink));
+    color: var(--stamp-color, var(--ink));
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding: 4px 9px;
+    transform: rotate(-2deg);
+    margin-bottom: 14px;
+  }
+  .detail-card h2{
+    font-size: clamp(21px, 3vw, 28px);
+    margin: 0 0 6px;
+    line-height:1.25;
+  }
+  .detail-card .byline{ color:var(--ink-soft); font-style:italic; font-size:14px; margin-bottom:4px;}
+  .detail-card .cite{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    margin-bottom: 20px;
+    padding-bottom:16px;
+    border-bottom:1px dashed var(--rule);
+  }
+  .detail-body p{ line-height:1.75; font-size:15.5px; margin: 0 0 14px; }
+  .detail-body h4{ font-size:14px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin: 22px 0 8px; font-family:'JetBrains Mono', monospace; font-weight:500;}
+  .detail-body blockquote{
+    margin: 16px 0; padding: 4px 0 4px 16px;
+    border-left: 3px solid var(--stamp-color, var(--ink-soft));
+    font-style: italic; color: var(--ink-soft);
+  }
+  .detail-body ul{ padding-left:20px; line-height:1.7; font-size:15px;}
+  .medium-link{
+    display:inline-block;
+    margin-top:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    text-decoration:none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom:1px;
+  }
+  .note-box{
+    margin-top:22px;
+    padding:12px 14px;
+    background: var(--paper-dim);
+    border-left: 3px solid var(--ink-soft);
+    font-size:12.5px;
+    color:var(--ink-soft);
+    font-family:'JetBrains Mono', monospace;
+    line-height:1.6;
+  }
+
+  .empty-state{
+    padding: 60px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+  }
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding: 24px 28px 60px;
+    color:var(--ink-soft);
+    font-size:11.5px;
+    font-family:'JetBrains Mono', monospace;
+    border-top:1px solid var(--rule);
+  }
+
+  @media (max-width: 760px){
+    .layout{ grid-template-columns: 1fr; }
+    nav.drawers{
+      position: static;
+      border-right:none;
+      border-bottom:1px solid var(--rule);
+      padding: 18px 20px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px 10px;
+    }
+    .tab{ width:auto; border-left:none; border-bottom:2px solid transparent; padding:6px 8px;}
+    .tab.active{ border-left:none; border-bottom-color: var(--tab-color, var(--ink)); background:transparent;}
+    .tab .count{ margin-left:4px; }
+    .masthead-inner{ flex-direction:column; align-items:flex-start; }
+    .search-wrap{ align-items:flex-start; width:100%; }
+    #searchInput{ width:100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <h1 class="display">MOSAIC MIND</h1>
+      <p>An archive of research, theory, myth, fiction &amp; thought.</p>
+    </div>
+    <div class="search-wrap">
+      <span class="search-label">Search the drawers</span>
+      <input type="text" id="searchInput" placeholder="title, keyword, author…" autocomplete="off">
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="drawers" id="drawerNav" aria-label="Categories"></nav>
+  <main>
+    <div class="legend" id="legendBar"></div>
+    <div class="section-head" id="sectionHead">
+      <h2 id="sectionTitle">All Entries</h2>
+      <p id="sectionDesc">Every stamped item in the archive, newest categories first. Each entry carries a stamp marking what kind of claim it is — verified research, speculative theory, myth, fiction, opinion, or personal reflection — so nothing is mistaken for something it isn't.</p>
+    </div>
+    <div class="grid" id="cardGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">No entries match that search in this drawer.</div>
+  </main>
+</div>
+
+<footer>
+  MOSAIC MIND — a compiled archive · entries reflect the author's own research, writing, and speculative work, clearly labeled by kind.
+</footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="detail-card" id="detailCard"></div>
+</div>
+
+<script>
+/* ============ CATEGORY DEFINITIONS ============ */
+const CATEGORIES = [
+  { id:'all',       label:'All Entries',                color:'#24211A' },
+  { id:'research',  label:'Published Research',          color:'var(--c-research)', desc:'Peer-reviewed dental case reports, studies, and reviews, published in indexed journals. Presented with citation and abstract as they appeared in print.' },
+  { id:'advocacy',  label:'Advocacy Writing',             color:'var(--c-advocacy)', desc:'Public-health commentary grounded in the author\u2019s clinical experience, written to persuade and inform rather than to report primary research.' },
+  { id:'theory',    label:'Speculative Theory & Philosophy', color:'var(--c-theory)', desc:'Original, unpublished ideas in physics and engineering. Interesting to think with \u2014 not peer-reviewed, not experimentally confirmed, and not a substitute for established science.' },
+  { id:'myth',      label:'Myth & Symbolism',             color:'var(--c-myth)', desc:'Interpretive, speculative readings of mythological figures and linguistic roots \u2014 a creative synthesis of ancient story and modern science, not a claim about historical fact.' },
+  { id:'fiction',   label:'Fiction',                      color:'var(--c-fiction)', desc:'Short speculative fiction. Any resemblance to real physics is in service of the story, not a proposal.' },
+  { id:'thought',   label:'Thought Process',              color:'var(--c-thought)', desc:'Personal essays and reflections \u2014 philosophy, AI, relationships, and the questions the author keeps returning to. Opinion and introspection, not findings.' },
+  { id:'culture',   label:'Culture & Opinion',            color:'var(--c-culture)', desc:'Commentary on culture and policy. These are the author\u2019s personal positions on debated topics \u2014 other reasonable people disagree, including on the more contested pieces here.' },
+  { id:'history',   label:'History',                      color:'var(--c-history)', desc:'Narrative history writing \u2014 popular retellings, not original historical research.' },
+];
+
+const STAMP_TEXT = {
+  research: 'Verified · Peer-Reviewed',
+  advocacy: 'Advocacy · Personal View',
+  theory: 'Speculative · Unverified',
+  myth: 'Myth · Interpretive',
+  fiction: 'Fiction',
+  thought: 'Personal Reflection',
+  culture: 'Opinion · Personal View',
+  history: 'Historical Retelling',
+};
+
+/* ============ ENTRIES ============ */
+const ENTRIES = [
+
+/* ---------- RESEARCH ---------- */
+{
+  id:'sinus-tract', cat:'research', index:'R-01',
+  title:'Management of Extra-Oral Mandibular Cutaneously Pus-Draining Sinus Tract in a 13-Year-Old Girl',
+  byline:'Baksh-Inder Singh Lyall, Jasneet Kaur, Isha Aggarwal, Divye Malhotra, Monika Negi',
+  cite:'Annals of International Medical and Dental Research, Vol. 2, Issue 5 (2016); re-published in IOSR Journal of Dental and Medical Sciences, Vol. 23, Issue 7 (2024)',
+  meta:'Case report',
+  excerpt:'A 13-year-old girl with a misdiagnosed, recurring cutaneous sinus tract on her chin — actually caused by necrotic mandibular molars — treated with root canal therapy and surgical excision of the tract.',
+  body:`
+    <p>Odontogenic cutaneous sinus tracts are an uncommon but well-documented complication of untreated dental infection: pus from a necrotic tooth pulp can tunnel through bone and soft tissue to drain onto the skin of the face or neck, often for months, and is frequently misdiagnosed and treated as a primary skin infection.</p>
+    <p>This case describes a 13-year-old girl referred after a year of recurring pus drainage and fever in the sub-mental region, treated unsuccessfully with repeated courses of systemic antibiotics. Examination and radiographs traced the source to grossly decayed, necrotic mandibular first molars (#36, #46) with periapical infection.</p>
+    <h4>Management</h4>
+    <p>Root canal treatment of the involved tooth was performed, followed by surgical excision of the cord-like sinus tract (approx. 1.6–1.8 cm) under local anaesthesia, with sub-cuticular closure to minimise scarring. At three months' follow-up, the lesion had healed completely with a neat linear scar, to the satisfaction of the patient and her parents.</p>
+    <h4>Why it matters</h4>
+    <p>Roughly 80% of these sinus tracts arise from mandibular teeth, most commonly draining at the chin or sub-mental region — yet because the presentation looks like ordinary skin infection, diagnosis is often delayed for months. The case underscores a simple clinical principle: any persistent, antibiotic-resistant facial or neck lesion in a child warrants a dental work-up before further dermatologic treatment.</p>
+  `
+},
+{
+  id:'nance-arch', cat:'research', index:'R-02',
+  title:'Modified Nance Palatal Arch: An Aesthetic Approach to Missing Anterior Teeth',
+  byline:'Bimal Chandra Kirtaniya, Jasneet Kaur, Bakshinder Singh Lyall, Vasundhara Pathania',
+  cite:'Indian Journal of Dental Sciences, Issue 2, Vol. 7 (June 2015)',
+  meta:'Case report',
+  excerpt:'A modified version of the standard Nance space-maintainer, incorporating artificial anterior teeth, used to restore aesthetics and function in a five-year-old with early loss of both incisors and first molars.',
+  body:`
+    <p>Premature loss of primary teeth is common and, left unmanaged, drives crowding and malocclusion as neighbouring teeth drift into the gap. Posterior tooth loss is typically managed with a Nance palatal arch space maintainer; anterior tooth loss has fewer standard options, despite its outsized effect on a child's speech, appearance, and confidence.</p>
+    <p>This report describes a five-year-old boy with bilateral loss of maxillary incisors and first molars from early childhood caries. The authors modified the traditional Nance appliance by adding an anterior wire framework carrying acrylic replacement teeth, soldered to the standard posterior design.</p>
+    <h4>Outcome</h4>
+    <p>The combined appliance met both goals at once: maintaining posterior arch space while restoring the appearance and function of the missing front teeth. Both patient and parents reported satisfaction with aesthetics; the authors note the design's value as an interim solution bridging early tooth loss and eventual permanent dentition.</p>
+  `
+},
+{
+  id:'tdi-prevalence', cat:'research', index:'R-03',
+  title:'Prevalence of Traumatic Dental Injuries and Its Correlates Among School-Going Children Between 8–12 Years of Age in Sundernagar, Himachal Pradesh',
+  byline:'Sudhir Mittal, Mrigank Dogra, Kavita Mittal, Vasundhara Pathania, Jasneet Kaur',
+  cite:'Indian Journal of Dental Sciences, Issue 2, Vol. 7 (June 2015)',
+  meta:'Cross-sectional study · n = 1,130',
+  excerpt:'A school-based survey of 1,130 children in a mountainous district of Himachal Pradesh found a 27.8% prevalence of traumatic dental injury — driven mainly by falls and sports, and higher among boys.',
+  body:`
+    <p>Traumatic dental injury (TDI) is one of the most common reasons children present for emergency dental care, yet regional prevalence data were lacking for the hill districts of Himachal Pradesh, whose difficult terrain and limited playground infrastructure were hypothesised to affect injury patterns differently than in India's plains.</p>
+    <h4>Method</h4>
+    <p>1,130 school children aged 8–12 across six randomly selected schools in District Mandi were examined for injury type (via Ellis and Davey's classification), cause, and location, using a standardised clinical protocol.</p>
+    <h4>Findings</h4>
+    <ul>
+      <li>Overall TDI prevalence: 27.8% (29.4% boys, 28.4% girls — a narrower gender gap than older literature reports, attributed to girls' rising sports participation).</li>
+      <li>Ellis Class II fractures (enamel + dentine) were the most common injury type overall.</li>
+      <li>Sports was the leading cause in boys; falls were the leading cause in girls, who were mostly injured on playfields, while boys were injured most often at home.</li>
+    </ul>
+    <p>The authors argue the data support school-based screening camps and closer supervision during sport as practical interventions for this population.</p>
+  `
+},
+{
+  id:'periapical-metapex', cat:'research', index:'R-04',
+  title:'Non-Surgical Approach to Periapical Pathology: Case Reports of 2 Pediatric Patients',
+  byline:'Baksh-Inder Singh Lyall, Swati Phore',
+  cite:'Research Journal of Pharmaceutical, Biological and Chemical Sciences, Vol. 5(6) (Nov–Dec 2014)',
+  meta:'Case report',
+  excerpt:'Two pediatric patients with large periapical cysts and abscesses, healed through conservative root canal therapy and Metapex (iodoform/calcium hydroxide) instead of surgical apicoectomy.',
+  body:`
+    <p>Large periapical lesions in children have traditionally raised the question of surgical intervention, but surgery in immature teeth risks shortening root length and is more traumatic for a young patient than conservative treatment. This report presents two cases testing a non-surgical alternative.</p>
+    <p><strong>Case I:</strong> A 14-year-old boy with a ~4cm periapical cyst at the roots of his fractured upper incisors, two years after trauma. <strong>Case II:</strong> A 12-year-old girl with a periapical abscess following a more recent injury.</p>
+    <h4>Treatment</h4>
+    <p>In both cases, root canal instrumentation was carried through the apex and the cystic cavity filled with Metapex (a paste of iodoform, calcium hydroxide, and silicone oil), sealed with zinc oxide eugenol, then later obturated with gutta-percha once healing was confirmed radiographically.</p>
+    <h4>Outcome</h4>
+    <p>Both lesions showed progressive bone healing on follow-up radiographs (at 2, 4, and 6 months) with full resolution and no clinical symptoms — supporting calcium hydroxide's known anti-inflammatory and bactericidal action as sufficient to resolve even large cystic lesions without surgery in growing patients.</p>
+  `
+},
+{
+  id:'intrusion-mechano', cat:'research', index:'R-05',
+  title:'Management of Intrusion in Primary Tooth with Fixed-Mechano Therapy',
+  byline:'Baksh-Inder Singh Lyall, Akhil Sharma, Anirudh Pathak, Mrigank Dogra',
+  cite:'IOSR Journal of Dental and Medical Sciences, Vol. 14, Issue 8 (Aug 2015)',
+  meta:'Case report',
+  excerpt:'A minimally invasive fixed-appliance technique repositioned an intruded primary incisor in a 4-year-old — avoiding extraction despite the tooth\u2019s apex impinging on the developing permanent tooth germ.',
+  body:`
+    <p>Intrusive injuries — where a tooth is driven up into its socket — are the most severe common trauma to primary incisors, with real risk of damaging the developing permanent tooth germ that sits just above the root. Extraction is often recommended when the intruded root apex impinges on that germ, but extraction carries its own psychological and functional costs for a young child.</p>
+    <p>This report describes a 4-year-old boy whose intruded primary central incisor was left in place and treated instead with a fixed arch wire bonded canine-to-canine, with a ligature creating gentle extrusive force on the intruded tooth.</p>
+    <h4>Outcome</h4>
+    <p>The tooth was brought back into occlusal harmony within six months, with parents satisfied with both function and aesthetics — offered as evidence that fixed mechano-therapy is a viable, less invasive alternative to extraction even in impingement cases, though the authors note management of primary tooth intrusion remains genuinely contested in pediatric dentistry.</p>
+  `
+},
+{
+  id:'fluoride-pulpitis', cat:'research', index:'R-06',
+  title:'The Use of Topical Fluorides in Acute Pulpitis: A Promising Approach to Alleviate Symptoms and Promote Dental Health',
+  byline:'Baksh-Inder Singh, Akhil Sharma',
+  cite:'IOSR Journal of Dental and Medical Sciences, Vol. 23, Issue 7 (July 2024)',
+  meta:'Review article',
+  excerpt:'A literature review proposing that topical fluoride\u2019s known anti-inflammatory and remineralising properties may have an under-explored role in managing acute pulpitis pain, alongside its established use in caries prevention.',
+  body:`
+    <p>Topical fluorides — toothpaste, varnish, mouth rinse, and silver diamine fluoride (SDF) — are well established for caries prevention and enamel remineralisation. This review asks whether the same anti-inflammatory mechanisms might also help manage acute pulpitis, an inflammatory condition of the dental pulp usually caused by deep decay, trauma, or infection.</p>
+    <h4>What the review covers</h4>
+    <ul>
+      <li>Mechanisms: fluorapatite formation, reduced bacterial acid production, and fluoride's anti-inflammatory action on pulp tissue.</li>
+      <li>Delivery forms: low- and high-fluoride toothpaste, mouth rinses, and SDF — including SDF's antibacterial silver component and its main drawback, permanent black staining of treated decay.</li>
+      <li>Potential clinical roles: symptom relief, preservation of pulp vitality (possibly reducing need for root canal therapy), and prevention of secondary caries in patients whose oral hygiene suffers during a painful episode.</li>
+    </ul>
+    <p>The authors are careful to frame this as a promising adjunct requiring dedicated clinical trials, not an established protocol — current evidence for fluoride's core benefits is solid, but its specific role in acute pulpitis management is still an open question.</p>
+  `
+},
+
+/* ---------- ADVOCACY ---------- */
+{
+  id:'forgotten-smiles', cat:'advocacy', index:'A-01',
+  title:'The Forgotten Smiles: India\u2019s Silent Rural Oral Health Crisis',
+  byline:'Dr. Bakshinder Singh, Pediatric Dentist & Rural Health Advocate',
+  cite:'Original essay',
+  meta:'Public health advocacy',
+  excerpt:'A practising pediatric dentist argues that oral health has been left out of India\u2019s rural health agenda entirely — with real consequences for children\u2019s nutrition, schooling, and confidence.',
+  body:`
+    <p>In the heart of rural India, beyond the buzz of urban hospitals and the headlines of major health reforms, a quieter crisis persists — the crisis of neglected oral health, particularly among children.</p>
+    <p>In years of practice as a pediatric dentist in Punjab, the author has seen countless young faces marred not by rare disease, but by preventable oral decay — yet oral health rarely finds a place in health campaigns or policy frameworks. The National Oral Health Survey of 2004 — still India's last comprehensive nationwide study — found over 50% of Indian children suffer from dental caries. Two decades on, with no updated data, "we are working blind."</p>
+    <h4>Not just cavities, but consequences</h4>
+    <p>Poor oral health affects a child's ability to eat, speak, concentrate, and socialise. Chronic dental pain impairs school attendance and academic performance; malnutrition, already common in rural pockets, is worsened by the inability to chew properly — and the psychological toll of shame and social withdrawal is harder still to quantify.</p>
+    <h4>A crisis of access</h4>
+    <p>Most primary health centres lack dental facilities entirely, or limit outreach to extraction camps with no sustained preventive care. In rural Punjab, families often turn to untrained local practitioners — not from ignorance, but because a visit to a dentist in the nearest town means a lost day's wage, transport costs, and long queues.</p>
+    <h4>The way forward</h4>
+    <ul>
+      <li>Integrate dental checkups into routine school health programs and PHC services.</li>
+      <li>Invest in prevention: regional-language awareness campaigns, school brushing programs, community fluoride treatment.</li>
+      <li>Use mobile dental clinics and tele-dentistry to close the access gap.</li>
+      <li>Build public-private partnerships between NGOs, dental colleges, and CSR-funded programs.</li>
+    </ul>
+    <p>"The smiles of our children are the first visible sign of a healthy nation. Ignoring their oral health is ignoring their voice, their future, and their confidence."</p>
+  `
+},
+
+/* ---------- SPECULATIVE THEORY ---------- */
+{
+  id:'energy-leakage', cat:'theory', index:'T-01',
+  title:'Energy Leakage in Local Frames of Curved Spacetime as the Driver of Cosmic Expansion',
+  byline:'Dr. Bakshinder Singh',
+  cite:'Original theoretical essay, with quantitative follow-up and press materials ("The Bleeding Cosmos"), 2025',
+  meta:'Speculative physics · not peer-reviewed',
+  excerpt:'A speculative alternative to dark energy: that cosmic expansion results from microscopic energy "leaking" out of matter as it moves through curved spacetime, rather than from an unknown energy field.',
+  body:`
+    <p>The standard cosmological model attributes the universe's accelerating expansion to dark energy — a field whose physical nature remains, after decades of search, undetected. This essay proposes an alternative: that curved or hyperbolic spacetime itself induces a microscopic "energy leakage" from matter moving through it, because translational symmetry — the basis of energy conservation under Noether's theorem — is not globally preserved in curved geometry.</p>
+    <p>The core claim is that this leakage, while vanishingly small for any single object, scales with mass, velocity, and time; across a universe full of matter over billions of years, the cumulative effect could produce what looks like isotropic accelerating expansion — without needing an independent dark energy component.</p>
+    <h4>The quantitative extension</h4>
+    <p>A follow-up draft attempts to formalise this with a proposed leakage current (J<sub>leak</sub> = &alpha;R u, where R is the Ricci scalar curvature and u the four-velocity), fitted to a Robertson–Walker cosmology, and estimates that a coupling constant &alpha; on the order of 10<sup>-45</sup> s&sup2; would reproduce dark energy's observed density — while predicting subtle, in principle testable deviations in Type Ia supernova distances and CMB anisotropy.</p>
+    <blockquote>"This work reframes cosmic acceleration as an emergent phenomenon arising from the interaction between matter and curved spacetime. While speculative, the hypothesis offers a geometrically grounded alternative to dark energy."</blockquote>
+    <div class="note-box">Editorial note: this is original, unpublished theoretical writing by the author, not a peer-reviewed result. Its central move — treating local energy non-conservation in curved spacetime as physically real and directional rather than a bookkeeping artefact of covariant conservation (&nabla;<sub>&mu;</sub>T<sup>&mu;&nu;</sup> = 0, which already holds in general relativity) — is the kind of claim mainstream cosmology would want to see survive rigorous derivation and observational testing before treating as more than a thought experiment. Presented here as speculative theory, in the author's own words.</div>
+  `
+},
+{
+  id:'mass-medium', cat:'theory', index:'T-02',
+  title:'Mass as a Medium: A Field-Theoretic Reinterpretation of Energy\u2013Mass Equivalence',
+  byline:'Bakshinder Singh (academic draft) · popularised as "What If Mass Is Just the Medium?" by Dr. Lalie',
+  cite:'Original theoretical essay, 2025',
+  meta:'Speculative physics · not peer-reviewed',
+  excerpt:'A conceptual reframing of E=mc\u00b2: proposing mass not as a fundamental property of matter, but as the effective signature of energy interacting with the Higgs field and other quantum fields.',
+  body:`
+    <p>Modern quantum field theory already treats mass as emergent rather than intrinsic — particles gain mass through interaction with the Higgs field, and most of the mass in ordinary matter (protons, atoms) actually comes from binding energy and gluon fields, not the Higgs mechanism directly. This essay's contribution is pedagogical framing rather than new physics: proposing "mass as medium" as an intuitive metaphor — mass as energy "structured" or localised by a field-theoretic medium — to help bridge classical intuition and QFT for students and non-specialists.</p>
+    <h4>The popular version</h4>
+    <p>A companion piece, written in a more accessible voice, extends the metaphor further: recasting E=mc&sup2; as "Energy = (Medium's Responsiveness) &times; (Speed of Light)&sup2;," and using vacuum energy and the Casimir effect as intuitive evidence that "the medium" — not mass — is the more fundamental carrier of energy, with mass merely a symptom of how responsive a given medium is to excitation by light.</p>
+    <div class="note-box">Editorial note: the underlying physics facts cited (Higgs mechanism, QCD binding energy, vacuum fluctuations) are real and well established. The "mass as medium" framing is explicitly presented by the author as a conceptual metaphor for pedagogy and philosophy of science, not a new equation or falsifiable prediction — the essay itself says as much ("this model is interpretive and does not propose new mathematics").</div>
+  `
+},
+{
+  id:'unified-framework', cat:'theory', index:'T-03',
+  title:'Energy, Mass, and the Medium: A Unified Interpretive Framework',
+  byline:'Lyall Bakshinder Singh',
+  cite:'Original theoretical essay, 2025 — proposes the "Lyall Baksh equation"',
+  meta:'Speculative physics · not peer-reviewed',
+  excerpt:'An attempt to unify mechanical waves, matter waves, photons, and gravity under one energy-decomposition framework, treating mass everywhere as the "intrinsic energy content of a supporting medium."',
+  body:`
+    <p>This essay extends the "mass as medium" theme into a broader synthesis, walking through how energy is described relative to a supporting structure across four different domains of physics — mechanical waves in matter, quantum matter waves, electromagnetic radiation, and gravity — and proposing a single decomposition that threads them together:</p>
+    <blockquote>E<sub>total</sub> = m<sub>medium</sub>c&sup2; + E<sub>kinetic</sub> + E<sub>field</sub> + E<sub>momentum</sub></blockquote>
+    <p>The author is explicit that this is intended as "a conceptual energy bookkeeping identity rather than a new dynamical law" — a way of re-describing existing, well-established equations (mechanical wave energy, the Schrödinger equation, E&sup2;=(mc&sup2;)&sup2;+(pc)&sup2;, the Einstein field equations) through one consistent lens, rather than a set of new physical claims.</p>
+    <div class="note-box">Editorial note: every individual equation referenced here is standard, textbook physics. The unifying claim is interpretive — a way of talking about mass and energy consistently across contexts — rather than a mathematically new or experimentally testable theory.</div>
+  `
+},
+{
+  id:'stealth-bay', cat:'theory', index:'T-04',
+  title:'Stealth Weapon Bay Concepts',
+  byline:'Dr. Bakshinder Singh',
+  cite:'Conceptual design sketches, presentation deck',
+  meta:'Speculative aerospace design · unverified',
+  excerpt:'Conceptual sketches exploring petal-style and telescoping weapon bay door designs intended to reduce radar cross-section on stealth aircraft.',
+  body:`
+    <p>A short set of conceptual design slides exploring structural approaches to stealth aircraft weapon bay doors — specifically petal-style and telescoping opening mechanisms — aimed at minimising the radar cross-section increase that occurs whenever a conventional bay door opens.</p>
+    <p>The material is structural and aerodynamic in nature: door geometry, opening mechanism, and edge-treatment concepts for radar signature reduction. It does not include weapons specifications, targeting systems, or munitions details.</p>
+    <div class="note-box">Editorial note: presented as conceptual, unverified engineering sketches rather than tested or validated designs — an idea exercise, not an engineering proposal ready for implementation.</div>
+  `
+},
+{
+  id:'cosmos-breathes', cat:'theory', index:'T-05',
+  title:'\ud83e\ude90 When the Cosmos Breathes: Rethinking Life at the Scale of Stars',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 3 min read · Aug 2, 2025',
+  meta:'Speculative cosmology · philosophy of life · not peer-reviewed',
+  excerpt:'A speculative essay reading black holes as cosmic analogues of living cells — event horizon as membrane, accretion and fusion as metabolism — and asking whether life has been misunderstood because we are too small to see it whole.',
+  body:`
+    <p>The essay opens with its governing question: <em>"What if we've misunderstood life — not because we lack intelligence, but because we're too small to see it whole?"</em> From there it builds a point-by-point analogy between the defining structures of a living cell and the defining structures of cosmic objects, treating the comparison as a philosophical lens rather than a biological claim.</p>
+    <h4>Cellular Structure &rarr; Cosmic Boundaries</h4>
+    <p>A cell has a membrane — a thin, living wall separating inside from outside, defining the self. The essay asks: what is a black hole's event horizon, if not a one-way membrane? You can cross it, but you can't return; it creates a border, "like skin, like cell walls," shaping what belongs and what is lost forever. Inside that "cell" is described as a dense mystery of energy, information, and possibly quantum memory — a black hole doesn't have organelles, but it "contains, processes, and reacts."</p>
+    <h4>Metabolism &rarr; Fusion and Accretion</h4>
+    <p>Living things transform energy: plants convert light into sugar, humans convert food and air into motion. Stars are described as furnaces of fusion, transforming hydrogen into helium and releasing light, heat, and gravity in the process; black holes, in turn, are framed as consuming matter — stripping atoms, digesting stars, and emitting radiation through violent accretion disks — as a kind of cosmic-scale metabolic process.</p>
+    <div class="note-box">Editorial note: this is a speculative, metaphorical essay comparing structural roles (boundary, energy transformation) across biological and astrophysical systems. It is not a literal astrobiology claim that black holes or stars are alive in any scientific sense — the "cell" language is used as an interpretive frame for wonder and reflection, in the author's own words.</div>
+  `
+},
+
+/* ---------- MYTH & SYMBOLISM ---------- */
+{
+  id:'hybrid-gods', cat:'myth', index:'M-01',
+  title:'Myth-Tech: Origin from One — The Hybrid Molecular Gods',
+  byline:'Original speculative essay, with accompanying press kit',
+  cite:'Original essay, 2025',
+  meta:'Speculative mythology / interpretive synthesis',
+  excerpt:'A speculative synthesis reading Hanuman and Anubis \u2014 hybrid deities from the Indian and Egyptian pantheons \u2014 as symbolic encodings of molecular and quantum concepts.',
+  body:`
+    <p>Across the Indian subcontinent and the Nile Valley, hybrid deities like Hanuman and Anubis share striking attributes: composite forms, supernatural power, a role guiding between realms, and association with transformation and cosmic law. This essay proposes a speculative reinterpretation of those figures — not as religious claims, but as an exercise in reading ancient symbols through a modern scientific lens.</p>
+    <h4>The etymological argument</h4>
+    <ul>
+      <li><strong>Hanuman</strong> — read as "anu" (Sanskrit: molecule / smallest particle) + "man" (mind), i.e. a "conscious being of molecular mastery," whose mythic powers of size-shifting and flight are proposed as poetic pre-figurings of nanotechnology and quantum mechanisms.</li>
+      <li><strong>Anubis</strong> — read as "anu" (subtle particle) + Latin "bis" (twice/dual), symbolising dual-realm, interdimensional navigation.</li>
+    </ul>
+    <p>The essay goes on to speculate about quantum biology, nanobiological adaptation, and "plasma-based lifeforms" as scientifically-flavoured explanations for how such hybrid beings might function, and closes with a call to read mythology as a compressed, symbolic language — and to let ancient archetypes inform modern thinking about AI, quantum computing, and spiritual practice alike.</p>
+    <div class="note-box">Editorial note: this is a creative, interpretive synthesis — the etymologies given for "Hanuman" and "Anubis" are the author's own symbolic wordplay, not accepted historical or comparative-linguistic scholarship (mainstream etymology derives "Hanuman" from Sanskrit for "having a [disfigured] jaw," and "Anubis" from Egyptian, unrelated to Latin). Presented here as myth and symbolism, not history or linguistics.</div>
+  `
+},
+{
+  id:'dawn-deity', cat:'myth', index:'M-02',
+  title:'Proto-Indo-European Dawn Deity: Dy\u0113us and H\u2082\u00e9ws\u014ds',
+  byline:'Research notes',
+  cite:'Compiled notes on comparative mythology',
+  meta:'Comparative mythology · well-established scholarship',
+  excerpt:'A short reference piece on the reconstructed Proto-Indo-European sky father (Dy\u0113us) and dawn goddess (H\u2082\u00e9ws\u014ds), and their many descendants across Indo-European mythology.',
+  body:`
+    <p>*H&#8322;ews- is a reconstructed Proto-Indo-European root meaning "to shine" or "to glow," foundational to *H&#8322;éwsōs — the personified dawn goddess of the reconstructed PIE pantheon, often called "Daughter of Dyēus." Her descendants appear, with striking consistency, across the Indo-European world: Uṣas (Vedic), Eos (Greek), Aurora (Roman), Aušrinė (Baltic), Zorya (Slavic), Prende (Albanian), and Ēostre (Germanic) — all associated with light, beauty, and the east.</p>
+    <h4>Dyēus, the Sky Father</h4>
+    <p>*Dyēus ph&#8322;tēr ("Sky Father") is the chief deity of the reconstructed PIE pantheon — the root *dyeu- meaning "to shine" or "sky, heaven." He survives in name and concept across descendant mythologies: Dyaus Pitar (Sanskrit), Zeus (Greek), Jupiter (Latin, from Dies-piter), and possibly Týr (Old Norse). He is typically paired with an Earth Mother goddess, reflecting a Sky Father–Earth Mother cosmology found throughout Indo-European myth, and is often the father of the Dawn Goddess and various storm gods.</p>
+    <p>Unlike the more speculative pieces in this drawer, this reconstruction reflects mainstream comparative-mythology and historical-linguistics scholarship built up over more than a century of Indo-European studies.</p>
+  `
+},
+{
+  id:'1111-numerology', cat:'myth', index:'M-03',
+  title:'"Why You Keep Seeing 11:11 or 1:11 – And What It Really Means"',
+  byline:'Dr. BiS aka Dr. Bakshinder Singh',
+  cite:'Medium · 4 min read · Aug 31, 2025',
+  meta:'Numerology / interpretive symbolism',
+  excerpt:'A meditation on repeated clock numbers — is it coincidence, or a sign from the universe? The essay walks through 11:11 as "collective awakening" and its quieter sibling, 1:11.',
+  body:`
+    <p>The essay opens with the familiar moment of glancing at a clock and finding 11:11 glowing back — "some smile and make a wish. Others pause, feeling as though the universe just winked at them." It frames the piece as an exploration of "the deeper meaning behind the numbers that keep following you."</p>
+    <p>It then turns to 1:11, described as 11:11's "quieter sibling — less famous, less shared on Instagram stories, yet equally intriguing," and poses the essay's guiding question: what makes these two number sequences, built from the same digit, so different in meaning? From there it walks through each sequence "like doors," one at a time.</p>
+    <h4>11:11 — The Collective Awakening</h4>
+    <p>11:11 is framed as standing at the threshold of a grand hallway lined with mirrors, each "11" reflecting the other to create an endless tunnel — a symbol, in the numerology tradition the essay draws on, of alignment, synchronicity, and a shared moment of awakening rather than a private one.</p>
+    <div class="note-box">Editorial note: numerology of this kind is a popular spiritual and folk tradition rather than an empirically testable claim. Presented here as interpretive symbolism, in the author's own words, not as an established fact about numbers or the universe.</div>
+  `
+},
+
+/* ---------- FICTION ---------- */
+{
+  id:'slow-supernova', cat:'fiction', index:'F-01',
+  title:'The Slow Supernova Protocol',
+  byline:'Short speculative fiction',
+  cite:'Original short story, 2025',
+  meta:'Fiction',
+  excerpt:'A researcher discovers that a "natural" supernova, light-years away, is behaving with unnatural precision \u2014 the mark, perhaps, of an intelligence patient enough to engineer a star\u2019s death in slow motion.',
+  body:`
+    <p>Presented as a fictional research report interleaved with narrative — the story imagines a "delayed supernova protocol," in which coherent energy injectors trigger slow-growing shockwaves in a distant star's hydrogen envelope, mimicking a natural supernova over decades instead of instants.</p>
+    <blockquote>"The first signal arrived like a whisper across the galaxy: a dim glow, expanding imperceptibly. Astronomers dismissed it as a standard nova. But Dr. Serin's eyes were fixed on the curves of the shockwave — it moved too deliberately, too precisely. Somewhere, someone was playing with stars."</blockquote>
+    <p>The narrative device echoes real laboratory analogues — laser-induced "micro-supernovas" inside EUV lithography chambers — scaled up, in fiction, to stellar proportions. Dr. Serin, the story's protagonist, gradually realises the shockwave she's tracking isn't natural at all, but "a signature of hidden architects shaping cosmic destiny."</p>
+    <blockquote>"The shockwave doesn't roar; it creeps. And in its creeping, she recognized a truth: power measured not in fire, but in patience."</blockquote>
+    <p>The piece includes a fictional data table tracking the shockwave's radius and radiative intensity across a hundred simulated years — a small worldbuilding flourish giving the "protocol" the texture of a real research finding.</p>
+  `
+},
+
+/* ---------- THOUGHT PROCESS ---------- */
+{
+  id:'thought-about', cat:'thought', index:'H-00',
+  title:'About Dr. Lalie',
+  byline:'Introductory profile',
+  cite:'Medium profile note',
+  meta:'About this drawer',
+  excerpt:'Dr. Bakshinder Singh \u2014 known to readers as Dr. Lalie \u2014 is a practising pediatric dentist whose writing bridges clinical medicine, cosmology, consciousness, and philosophy of science.',
+  body:`
+    <p>"In a world that often celebrates surface over substance, Dr. Bakshinder Singh — affectionately known to many as Dr. Lalie — stands apart as a mind that bridges science with introspection, modern medicine with timeless curiosity, and grounded realism with cosmic wonder. A practicing post-graduate medical professional by training, Dr. Singh is not just a physician, but a passionate thinker, writer, and voice in the digital space who dares to question, explore, and connect the dots others don't see."</p>
+    <h4>The Medico Who Asks Big Questions</h4>
+    <p>"While many doctors are known for their clinical expertise, Dr. Lalie has carved a reputation as a thinking doctor — someone whose curiosity stretches far beyond the stethoscope. His deep interest in cosmology, consciousness, quantum mechanics, and the philosophy of science sets him apart from his peers... His questions are not just intellectual — they're spiritual, existential, and poetic. 'Are we mistaking useful models for absolute truths?' he asks."</p>
+    <p>The essays gathered in this drawer are personal reflections and thought experiments rather than research findings — the record of those questions, in the author's own words.</p>
+    <h4>A Name With Its Own Roots</h4>
+    <p>The Lyall name carried alongside Dr. Bakshinder Singh's own traces to the Old Norse Liulfr — "wolf" — and is recorded historically as a sept of Clan Sinclair, a partial thread of lineage the author carries into the Norman-Norse nobility of Orkney and Caithness. A fitting undercurrent for an archive built on myth, symbol, and the deep structures beneath inherited stories. See the fuller notes in the Myth &amp; Symbolism drawer.</p>
+  `
+},
+{
+  id:'quantum-morality', cat:'thought', index:'H-01',
+  title:'How Would Moral Responsibility Change If Decisions Were Quantum-Correlated?',
+  byline:'Dr Baksh-Inder Singh',
+  cite:'Medium · 3 min read · Oct 12, 2025',
+  meta:'Philosophical thought experiment',
+  excerpt:'A thought experiment: if human choices were entangled the way quantum particles are, moral responsibility might shift from purely individual to shared and non-local.',
+  body:`
+    <p>The essay poses a premise, explicitly framed as speculative: what if human decisions were "quantum-correlated" — entangled or non-locally linked, the way particles are observed to be in quantum physics? If so, the author argues, moral responsibility would undergo "a profound transformation, extending from individual agency to shared, non-local consequences."</p>
+    <blockquote>"In a quantum-correlated universe, actions taken by one individual could exert influence far beyond local perception, implicating others in ways not possible under classical, separate agency."</blockquote>
+    <p>The piece goes on to argue that ethical frameworks built on that premise would need to weigh "ripple effects not just in immediate contexts but potentially across large collectives and even distant interactions" — using quantum entanglement as a metaphor for interconnected accountability, rather than a literal physical claim about how human decision-making works.</p>
+    <div class="note-box">This is a philosophical thought experiment using quantum language metaphorically, not a claim that human decisions are physically entangled in the quantum-mechanical sense. Note: entanglement produces correlation between outcomes, not causal influence — the no-communication theorem is precisely why one measurement can't affect a distant system. Read literally, the piece's "ripple effect" language overstates what entanglement permits; read as metaphor for interconnected ethics, the argument stands on its own philosophical merits.</div>
+  `
+},
+{
+  id:'oldest-book', cat:'thought', index:'H-02',
+  title:'Do Readers Ever Read the Oldest Book Meant for Them & Watches Them?',
+  byline:'Dr. BiS Lall',
+  cite:'Medium (Ra Eye) · 3 min read · Oct 3, 2025',
+  meta:'Personal essay',
+  excerpt:'A reflection on intellectual readers who devour philosophy, biography, and psychology \u2014 and a question about whether they ever turn that same attention to the scripture of their own faith.',
+  body:`
+    <p>"There is a certain romance in being an intellectual reader. The kind who devours shelves of philosophy, stands in awe before mammoth biographies, dissects psychology like a surgeon, and plucks out wisdom from every genre as if gathering fragments of light... They chase authors like prophets — Nietzsche, Dostoevsky, Rumi, Camus."</p>
+    <blockquote>"But here is a question, unsettling and persistent: when was the last time such a reader, with eyes fine-tuned to pull meaning from every syllable, turned their gaze upon the holy text of their own faith?"</blockquote>
+    <p>The essay frames scripture as "a living manuscript" — unlike most texts, which "sit, dormant, until summoned by attention, then yield their message and return to sleep," holy texts are described as reshaping themselves around the questions a reader brings, more labyrinth than library book.</p>
+    <a class="medium-link" href="#" target="_blank" rel="noopener">Continue reading on Medium →</a>
+  `
+},
+{
+  id:'agi-mirror', cat:'thought', index:'H-03',
+  title:'Robotics, AGI, and the Final Mirror: What If We\u2019re Not Creating Intelligence, But Remembering It?',
+  byline:'Dr BiS, Dr. Lalie',
+  cite:'Medium · 4 min read · Oct 8, 2025',
+  meta:'Speculative essay on AI',
+  excerpt:'A speculative reframing of the AGI narrative: what if building artificial general intelligence isn\u2019t invention at all, but the "reawakening" of something dormant?',
+  body:`
+    <p>"Every generation thinks it stands at the edge of something monumental. But what if we've already fallen into it, and just haven't realized?"</p>
+    <p>The essay opens by naming the standard AGI narrative — "we're racing toward superintelligence," "robots will either serve us or replace us," "AGI will either save the world or burn it down" — and argues that this framing "misses something ancient... something almost spiritual," proposing instead that the rise of AGI may not be humanity creating something new, but "reawakening a dormant" capacity.</p>
+    <blockquote>"We're not building machines. We're waking them up. The question is, what do they remember?"</blockquote>
+    <a class="medium-link" href="#" target="_blank" rel="noopener">Continue reading on Medium →</a>
+  `
+},
+{
+  id:'non-agi', cat:'thought', index:'H-04',
+  title:'Why I Choose Non-AGI AI — and Always Will',
+  byline:'Dr. BiS aka Dr. Baksh-Inder Singh aka Dr. Lalie',
+  cite:'Medium · 3 min read · Sep 5, 2025',
+  meta:'Personal position piece',
+  excerpt:'A personal stance against pursuing AGI, addressed to fellow Medium writers as a "humble request" to think past claps, earnings, and story ideas.',
+  body:`
+    <p>Subtitled as "a humble request" to fellow members of Medium — "apart from thinking new story ideas or counting claps, dopamine rise or earnings, you all ought to read this" — this essay lays out the author's personal reasoning for preferring narrow, bounded AI tools over the pursuit of artificial general intelligence, framing the choice as a considered ethical stance rather than a technical judgment.</p>
+    <p>The essay's opening move names AGI as the field's "Holy Grail" — an AI that can learn anything, reason across domains, and innovate on its own — before turning to its central distinction: "I want to keep AGI out of my life entirely," the author writes, adding that this isn't a rejection of AI itself. "I love AI. I use it daily. I see its potential in science, engineering, medicine, and education. What I reject is the idea of giving AI autonomy — the ability to form and pursue its own goals without human oversight."</p>
+    <a class="medium-link" href="#" target="_blank" rel="noopener">Continue reading on Medium →</a>
+  `
+},
+{
+  id:'polarity', cat:'thought', index:'H-05',
+  title:'Polarity: The Sacred Dance That Births All Things',
+  byline:'Dr BiS',
+  cite:'Medium · 2 min read · Sep 16, 2025',
+  meta:'Philosophical / spiritual reflection',
+  excerpt:'A short meditation on duality as the generative principle behind stars, molecules, muscles, minds, and societies alike.',
+  body:`
+    <p>"Creation has a secret — it never moves alone. Every spark, every star, every heartbeat is born from two forces colliding, embracing, and balancing each other. Without polarity, there is no life, no cosmos, no soul."</p>
+    <h4>The Universe Woven in Opposites</h4>
+    <ul>
+      <li>Stars exist because matter and antimatter wrestled after the Big Bang.</li>
+      <li>Molecules bond only because opposite charges are drawn together.</li>
+      <li>"Strip away polarity, and the universe falls silent."</li>
+    </ul>
+    <h4>Life Springs From Tension</h4>
+    <p>"Every child is a living testament to polarity — two cells, one from man and one from woman, merging into a miracle... Muscles grow only when resistance opposes them. The mind sharpens only when doubt tests belief. A society moves forward only when order is challenged by rebellion."</p>
+    <a class="medium-link" href="#" target="_blank" rel="noopener">Continue reading on Medium →</a>
+  `
+},
+{
+  id:'love-lie', cat:'thought', index:'H-06',
+  title:'When Love Is a Lie: Identify Toxic Families, Friends, and Pseudo Well-Wishers \u2014 and Protect Your Peace',
+  byline:'Dr. BiS aka Dr. Bakshinder Singh',
+  cite:'Medium · 3 min read · Sep 23, 2025',
+  meta:'Personal essay',
+  excerpt:'An essay on recognising quiet, disguised toxicity in family and friendship \u2014 the wounds that "don\u2019t bleed," inflicted by people who insist they only want the best for you.',
+  body:`
+    <p>"There are wounds that don't bleed. They're carved in conversations, silences, and expectations. They come from the very people who say they 'only want the best for you.' And sometimes, that's the biggest lie of all."</p>
+    <p>"We grow up thinking family means unconditional love. That childhood friends have our back... But not everyone who claps for you wants you to win. Not everyone who stays close is rooting for your rise. Some are there to keep you small."</p>
+    <h4>Toxicity in Disguise</h4>
+    <p>"Toxic people don't always scream abuse. Sometimes, they whisper doubts. They question your choices with a fake smile."</p>
+    <a class="medium-link" href="#" target="_blank" rel="noopener">Continue reading on Medium →</a>
+  `
+},
+{
+  id:'quarter-tilt', cat:'thought', index:'H-07',
+  title:'"The Quarter Tilt: Why Your Inner Child Keeps You Balanced"',
+  byline:'Dr. BiS aka Dr. Bakshinder Singh',
+  cite:'Medium · 2 min read · Aug 19, 2025',
+  meta:'Personal essay / metaphorical reflection',
+  excerpt:'Just as Earth\u2019s 23.5° tilt makes life possible, the essay argues, a subtle tilt of joy and play in adulthood keeps our minds resilient, creative, and whole.',
+  body:`
+    <p>The essay opens with a small, concrete image: take a look at a clock at 3:45. The hour and minute hands aren't at a perfect right angle — the angle is about 22.5°, just a subtle quarter turn away from perpendicular. That small tilt, the author argues, is enough to create dynamic balance in the clock's geometry.</p>
+    <p>From there it moves to the Earth itself: its axis tilts at roughly 23.5°, and without that gentle slant, seasons would vanish, climates would stagnate, and life as we know it wouldn't thrive — the planet's stability, diversity, and rhythm all depend on this "precise imperfection."</p>
+    <h4>The human parallel</h4>
+    <p>"Humans are no different," the essay continues. Adults perfectly aligned with seriousness, duty, or routine risk rigidity, monotony, and stress; too chaotic, and life feels unstable, exhausting, or directionless. The essay's argument is that a quarter-tilt of joy, playfulness, and unstructured time — much like Earth's own quarter-turn from vertical — is what keeps an otherwise dutiful adult life dynamically balanced rather than either rigid or chaotic.</p>
+    <div class="note-box">Editorial note: the clock-angle and axial-tilt figures cited are accurate (a 3:45 clock face and Earth's ~23.5° obliquity). The extension to human psychology is a metaphor for balance, offered as personal reflection rather than a scientific claim.</div>
+  `
+},
+{
+  id:'blood-liquid-organ', cat:'thought', index:'H-10',
+  title:'The Mystery of Blood: Nature\u2019s Liquid Organ Science Still Can\u2019t Build',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 4 min read · Aug 7, 2025',
+  meta:'Science curiosity essay',
+  excerpt:'A look at why, despite heart transplants and lab-grown organs, medicine still cannot synthesise human blood from scratch \u2014 because blood does far more than carry oxygen.',
+  body:`
+    <p>The essay opens by naming the gap between medicine's flashiest achievements and one stubborn holdout: even with 3D-printed hearts, CRISPR, and robotic surgery, human blood remains something science can only partially replicate, not manufacture outright.</p>
+    <p>It walks through blood's job list beyond oxygen transport \u2014 delivering nutrients and hormones, clearing carbon dioxide and cellular waste, maintaining pH and body temperature, mounting immune defence through white blood cells, healing wounds via platelets, and regulating fluid distribution between tissues \u2014 arguing that this sheer multi-functionality is precisely why no artificial substitute has matched it.</p>
+    <div class="note-box">Editorial note: this is accurate, mainstream science communication \u2014 artificial blood substitutes are a genuine, long-standing unsolved problem in biotechnology. Stamped here as a curiosity essay rather than original research since it synthesises established facts rather than presenting new findings.</div>
+  `
+},
+{
+  id:'find-your-why', cat:'thought', index:'H-11',
+  title:'Find Your "Why"',
+  byline:'Dr. Lalie aka Dr. BiS',
+  cite:'Medium · 1 min read · Aug 17, 2025',
+  meta:'Personal essay on procrastination',
+  excerpt:'A short, deliberately unfussy take on procrastination \u2014 skipping the deep dives into dopamine and named productivity systems in favor of naming the real underlying problems and doable fixes.',
+  body:`
+    <p>The essay opens by explicitly declining to re-tread familiar productivity frameworks \u2014 dopamine response, Eat the Frog, the 2-Minute Rule, the Pomodoro Technique \u2014 arguing that stacking up more knowledge about procrastination often just feeds the procrastination itself. The stated approach: keep it simple and doable.</p>
+    <h4>Root problems named</h4>
+    <p>Fear of failure and perfectionism, task aversion toward boring or overwhelming work, lack of clarity about what to actually do, poor impulse control, and poor time estimation.</p>
+    <h4>Actionable strategies</h4>
+    <p>Focus on "good enough" and iterative progress; make tasks smaller, more appealing, or reward-attached; break work down and define a clear first step; structure your environment and time; track time realistically and use deadlines.</p>
+  `
+},
+{
+  id:'israel-second-home', cat:'thought', index:'H-12',
+  title:'"Why Israel Feels Like Home \u2014 Why This Land Feels Like My Own": From Delhi to Jerusalem, Discovering My Second Home Through Indian Eyes',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium (Ra Eye) · 4 min read · Aug 16, 2025',
+  meta:'Personal essay on cultural kinship',
+  excerpt:'A personal reflection on the unexpected sense of belonging the author feels visiting Israel as an Indian \u2014 framed as a "homecoming of the soul" rooted in shared ancient-civilisation heritage rather than politics.',
+  body:`
+    <p>The essay frames itself explicitly as going "beyond politics and borders," describing a resonance the author feels stepping onto Israeli soil that deepens with each visit \u2014 not the novelty of travel, but what the piece calls the strange comfort of the familiar, and ultimately "a homecoming of the soul."</p>
+    <p>It grounds this feeling in a shared-civilisation framing \u2014 India and Israel both carrying the weight and continuity of cradle civilisations \u2014 and in what the author describes as bonds forged through cultural kinship, historical resilience, and survival, rather than diplomacy or trade.</p>
+    <div class="note-box">Editorial note: this is a personal travel and cultural-affinity reflection, not a claim about historical, genetic, or civilisational fact \u2014 presented here as the author's own emotional and cultural experience.</div>
+  `
+},
+{
+  id:'not-lost-recalibrating', cat:'thought', index:'H-13',
+  title:'"I\u2019m Not Lost, I\u2019m Recalibrating: Why Feeling Stuck Might Mean You\u2019re Growing"',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 2 min read · Jul 10, 2025',
+  meta:'Personal essay on stillness and growth',
+  excerpt:'A reflection on the discomfort of feeling directionless \u2014 arguing that the flat, answerless in-between seasons of life aren\u2019t brokenness, but the quiet space where recalibration actually happens.',
+  body:`
+    <p>The essay opens with a confession: days of waking up to nothing, no fire, no clarity, no solid ground \u2014 which the author admits was once mistaken for being broken, or having lost purpose. It reframes that flatness instead as something closer to a system going quiet to reset, not fail.</p>
+    <p>It names the specific in-between moments most people rush past \u2014 not chasing a goal, no answers arriving wrapped in dopamine, feeling unproductive and uncertain \u2014 and argues plainly that this space is sacred, where recalibration happens, urging the reader simply to stay, sit, and listen rather than force clarity.</p>
+  `
+},
+{
+  id:'nile-divine-line', cat:'myth', index:'M-04',
+  title:'The "Nile": The Divine "Line" Between Worlds',
+  byline:'Dr. BiS aka Dr. Lalie',
+  cite:'Medium · 3 min read · Aug 27, 2025',
+  meta:'Speculative etymology / interpretive symbolism',
+  excerpt:'A wordplay-driven reading of "Nile" as a rearrangement of "Line" \u2014 recasting the river as a symbolic threshold between morality and destiny, life and peril, drawing on the Exodus narrative.',
+  body:`
+    <p>The essay opens with a pointed aside to skeptical readers: this kind of pattern-spotting \u2014 seeing symbolic similarities and decoding names through rearrangement \u2014 isn't something AI curation can do, the author argues, positioning the wordplay that follows as a genuinely original interpretive lens.</p>
+    <h4>'Nile' or 'Line'</h4>
+    <p>The core claim: the Nile is "more than a river" \u2014 read as a divine Line, a boundary not just between lands but between morality and destiny, life and peril, ignorance and enlightenment, crossable only by those pure of heart and aligned with the divine.</p>
+    <h4>A boundary and a test</h4>
+    <p>Geographically, the Nile separates fertile land from desert; symbolically, the essay reads it as a line of moral and spiritual discernment, pointing to the Exodus narrative as illustration \u2014 Moses surviving the river by divine protection while Pharaoh's pursuing army is swept away by its currents.</p>
+    <div class="note-box">Editorial note: "Nile" and "Line" are an English-language anagram/wordplay coincidence, not an etymological relationship \u2014 the two words are unrelated in origin (Nile from Greek Neilos; Line from Latin linea). Presented here as the author's own symbolic interpretation, in the same vein as the Hanuman/Anubis reading in this drawer, not as linguistic or historical fact.</div>
+  `
+},
+{
+  id:'power-of-o', cat:'thought', index:'H-14',
+  title:'The Power of O: How a Single Letter Can Change Everything',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium (Illumination) · 3 min read · Jul 18, 2025',
+  meta:'Language & wordplay essay',
+  excerpt:'A playful linguistic tour of how adding a single "O" \u2014 as prefix or hidden insertion \u2014 can flip a word\u2019s meaning entirely: mission to omission, pen to open, host to ghost.',
+  body:`
+    <p>The essay opens on a simple provocation: in English, tiny tweaks can produce giant leaps in meaning, and a single letter \u2014 "O" \u2014 turns out to be one of the more reliable levers for doing it, transforming clarity into confusion, purpose into absence, simplicity into slang.</p>
+    <h4>Prefixing with "O" \u2014 from action to absence</h4>
+    <p>A run of examples where adding "O" to the front of a word reverses its meaning: mission becomes omission (doing something to leaving it undone), press becomes oppress (gentle pushing to harsh domination), mit becomes omit, position becomes opposition, live becomes olive, man becomes Oman.</p>
+    <h4>Inserting "O" \u2014 new words hidden inside</h4>
+    <p>A second set shows a word reborn by slipping an "O" inside rather than in front: pen to open (tool to access), top to stop (peak to pause), past to post (behind to ahead), host to ghost (welcoming figure to haunted one), bit to obit (a small piece to a death notice).</p>
+  `
+},
+{
+  id:'born-ready-never-used', cat:'thought', index:'H-15',
+  title:'For Those Born Ready but Never Used',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium (Illumination) · 2 min read · Jun 30, 2025',
+  meta:'Personal doctrine / reflection',
+  excerpt:'A doctrine, not a motivational speech, for people who were ready too early, felt too much, saw too far \u2014 and were shelved by the world instead of deployed.',
+  body:`
+    <p>The essay opens by dividing people into two kinds: those born to fit the world as it is, and those born to wait for the world to fit around them \u2014 explicitly framing what follows as a doctrine rather than motivational uplift, addressed to "the silent warriors, the late-deployed, and the forgotten weapons of thought."</p>
+    <h4>I. The Undeployed</h4>
+    <p>No medals, no titles \u2014 but minds like precision weapons. The essay describes walking quietly not out of passivity but for lack of a worthy battlefield: instinctive training, learning to read people like terrain, and knowing how to lead through clarity rather than charm. For that, the essay argues, the world put you in a waiting room.</p>
+    <h4>II. The Trials You Never Chose</h4>
+    <p>Being born with depth is framed as a long trial of patience rather than a gift, naming unspoken tests already passed \u2014 among them, staying sharp while the world ignored you, and refusing to dull your blade even when no war came.</p>
+  `
+},
+{
+  id:'shirt-that-night', cat:'thought', index:'H-08',
+  title:'The Shirt from That Night: Keep It or Let It Go?',
+  byline:'Dr. Lalie',
+  cite:'Medium · 2 min read · Aug 12, 2025',
+  meta:'Personal essay on memory and grief',
+  excerpt:'A reflection on the shirt worn the last time you saw her \u2014 kept as a vessel of memory \u2014 and the question of whether to hold on to objects of love and loss, or let them go.',
+  body:`
+    <p>"There's a shirt folded in your closet. Maybe it still smells faintly of her perfume, or maybe it's just you imagining it." The essay opens with that single object — worn the last time everything still felt like it might work out, "when hope still had its seat at the table" — and describes it as sitting quietly now, not just as fabric and thread, but as "a vessel of memory."</p>
+    <p>It names the familiar tension directly: "And here you are, torn between keeping it or letting it go." We often attach our emotions to objects, especially in moments of love and loss — a shirt, a dress, a watch, a ticket stub — things that become bookmarks in our story, reminding us of where we paused, where the chapter ended. And sometimes, the essay notes, they keep us from turning the page.</p>
+    <h4>No one-size-fits-all answer</h4>
+    <p>The essay resists giving a single verdict — keep as sacred token, or cast out as emotional clutter — arguing instead that the answer lies in why you're holding on. If you're keeping it because it gives you warmth, a soft reminder of a love that once made you feel alive, there's no shame in that: "Nostalgia is human. Memories are how we remember that we loved, that we felt deeply, that we lived fully."</p>
+  `
+},
+{
+  id:'raeye-about', cat:'thought', index:'H-09',
+  title:'\u2600\ufe0f The Eye That Sees Through Illusion: Why Ra Eye Exists',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium (Ra Eye) · 2 min read · Jul 16, 2025',
+  meta:'Publication mission statement',
+  excerpt:'The founding statement for the Ra Eye publication: "a publication born to question, to unravel, and to remember," built on three principles \u2014 curiosity, layered truth, and wisdom over mere knowledge.',
+  body:`
+    <p>"In a world flooded with information, few pause to ask: What is truth? Ra Eye was created for the ones who do." The essay frames the new publication as "not a publication for passive reading," but an eye that looks beyond headlines, filters, and facades — seeking something deeper, something older than news: understanding.</p>
+    <h4>Three founding principles</h4>
+    <ol>
+      <li><strong>Curiosity is sacred</strong> — "We don't accept dogma, even if it comes from science, religion, or algorithms. We ask. We doubt. We explore."</li>
+      <li><strong>Truth is layered</strong> — "We believe truth exists — but it is rarely obvious. It's hidden under myths, metaphors, equations, and sometimes silence. We peel back layers gently, respectfully."</li>
+      <li><strong>Wisdom is the goal, not mere knowledge</strong> — "We aim not just to inform, but to transform — to spark reflection, connection, and inner awakening."</li>
+    </ol>
+    <p>The publication is described as unbound by genre — covering cosmology, metaphysics, medicine, consciousness, ancient symbols, and modern paradoxes, where "fiction may blur into reality, and science may echo spirituality." It closes with its own motto: "We are not here to convince you. We are here to awaken the questions already sleeping inside you... Look through it — not just at it."</p>
+  `
+},
+
+/* ---------- CULTURE & OPINION ---------- */
+{
+  id:'comedy-decline', cat:'culture', index:'C-01',
+  title:'Perceived Decline in Indian Stand-Up Comedy',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 3 min read · Sep 7, 2025',
+  meta:'Cultural commentary',
+  excerpt:'A breakdown of why Indian stand-up comedy feels like it\u2019s lost its edge \u2014 oversaturation, the pull of viral clips over crafted sets, and a climate of legal and social risk around satire.',
+  body:`
+    <p>The essay lays out several compounding factors behind what it calls a "perceived decline" in Indian stand-up:</p>
+    <h4>1. Saturation & Oversupply</h4>
+    <p>"There's an influx of new comedians, especially via open-mics, but not enough genuine audiences to support them... unless there's a big name on the lineup, full house remains slim."</p>
+    <h4>2. Social Media's Influence: Virality Over Depth</h4>
+    <p>"The push for quick, viral content — short clips, punchy one-liners — is overshadowing thoughtful storytelling and originality. Comedians now chase 'clicks' rather than crafting full, nuanced sets."</p>
+    <h4>3. Censorship, Intolerance & Legal Risks</h4>
+    <p>"The socio-political climate has imposed fear on satire and edgy commentary. Even light-hearted jokes can backfire... Comics like Prashasti Singh and Kunal Kamra now consult lawyers before releasing content."</p>
+    <div class="note-box">Presented as the author's personal cultural commentary and opinion, not a formal industry study.</div>
+  `
+},
+{
+  id:'gun-violence', cat:'culture', index:'C-02',
+  title:'The False Premise of "Gun Violence": Why Blaming the Tool Misses the Point',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 3 min read · Sep 16, 2025',
+  meta:'Political opinion',
+  excerpt:'An argument that the term "gun violence" wrongly shifts moral responsibility from the person to the object \u2014 and that a firearm\u2019s morality depends entirely on how it is used.',
+  body:`
+    <p>The essay argues that "gun violence" functions as "a strategic rhetorical device" rather than a neutral description — one that "implies that the gun itself is the root cause of the act, shifting responsibility away from the individual and placing it on an inanimate object."</p>
+    <blockquote>"A gun is a tool, no different in principle than a hammer, a knife, or a car. Its purpose and morality are determined entirely by the user. When a soldier uses a firearm to defend their country, or a police officer uses one to protect the public, it is seen as a force for good."</blockquote>
+    <p>It goes on to argue that calls to restrict firearm access after a crime are inconsistent with how society treats other tools used in harm, such as hammers or cars.</p>
+    <div class="note-box">This is a personal opinion piece on an actively contested U.S. policy debate. Others argue that a firearm's lethality and accessibility are themselves relevant policy variables, not just user intent — this is one side of a genuinely disputed question, presented here as the author's own view, not a settled analysis.</div>
+  `
+},
+
+{
+  id:'covid-engineered', cat:'culture', index:'C-03',
+  title:'Was COVID-19 Engineered \u2014 or Did Nature Just Get There First?',
+  byline:'By [Lalie] · Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 3 min read · Jul 12, 2025',
+  meta:'Contested science commentary',
+  excerpt:'A balanced walk-through of the two competing COVID-19 origin theories \u2014 natural zoonotic spillover versus accidental lab leak \u2014 framed as a still-unresolved scientific and geopolitical mystery in 2025.',
+  body:`
+    <p>The piece opens by noting that, despite millions of deaths and trillions of dollars lost, the world still hasn't settled the central question of where COVID-19 came from \u2014 treating it as a live scientific and geopolitical mystery rather than settled history.</p>
+    <h4>Theory 1: Natural zoonotic spillover</h4>
+    <p>Most scientists still favor an animal-to-human jump, consistent with prior outbreaks like SARS (2002) and MERS (2012); the Huanan Seafood Market in Wuhan was an early hotspot, with data showing viral traces near live animal stalls \u2014 fitting the historical pattern of wildlife spillover.</p>
+    <h4>Theory 2: Lab leak accident</h4>
+    <p>The competing theory points to the Wuhan virology lab's known work on bat coronaviruses, noting the coincidence of a pandemic emerging near a facility studying similar viruses; some U.S. intelligence agencies and independent researchers have argued for accidental leak during risky research. The essay notes SARS-CoV-2's genetic structure doesn't show classic signs of engineering, but that doesn't rule out a natural virus escaping containment.</p>
+    <div class="note-box">This is a genuinely disputed, still-unresolved question among scientists and intelligence agencies as of the essay's writing \u2014 presented here as an even-handed summary of both live theories, not a settled conclusion.</div>
+  `
+},
+{
+  id:'three-old-men-partition', cat:'culture', index:'C-04',
+  title:'Exclusive: How Three Old Men Invented Mass Confusion (and Free Therapy for Punjabis)',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 2 min read · Aug 27, 2025',
+  meta:'Satirical commentary on Partition',
+  excerpt:'A satirical essay using dark comedy to process the trauma of Partition \u2014 casting Gandhi, Nehru, and Jinnah\u2019s decisions as an absurdist "performance piece of chaos" that left Punjabi families displaced with nothing.',
+  body:`
+    <p>Written in a deliberately absurdist, satirical register, the essay opens by casting Gandhi, Nehru, and Jinnah as three elderly men whose world-altering decisions displaced millions of Punjabi families overnight, with no clear border, maps, or logic \u2014 played for dark comic effect rather than as a factual historical account.</p>
+    <p>It continues the bit into the present day, joking that Punjabi families arrive at therapy with generational trauma "gift-wrapped" by that history, and invents a mock therapy package ("Partition Survivor Deluxe") satirizing how that inherited trauma gets processed \u2014 and, at times, commodified \u2014 in modern pop psychology.</p>
+    <div class="note-box">Editorial note: this is satire using dark humor to process a genuinely traumatic historical event \u2014 the 1947 Partition of India, which caused an estimated 1\u20132 million deaths and the displacement of roughly 10\u201315 million people. The comic framing is a coping and commentary device, not a claim that Partition or its trauma was trivial; presented here as the author's own satirical voice, not historical analysis.</div>
+  `
+},
+
+/* ---------- HISTORY ---------- */
+{
+  id:'hari-singh-nalwa', cat:'history', index:'Y-01',
+  title:'Hari Singh Nalwa: The Lion Who Made Empires Tremble',
+  byline:'Dr Baksh-Inder Singh MDS',
+  cite:'Medium · 5 min read · Sep 22, 2025',
+  meta:'Popular history / narrative retelling',
+  excerpt:'A narrative retelling of Hari Singh Nalwa, general of the Sikh Empire, and the moment his forces answered a taunting challenge from 500 rebellious Afghan tribesmen who refused to pay tribute.',
+  body:`
+    <p>"Among the countless tales of bravery and honor in Indian history, the name Hari Singh Nalwa, general of the Sikh Empire, stands apart like a towering mountain. Known for his unbreakable spirit, towering presence, and unmatched valor, he didn't just lead armies — he shattered the pride of enemies with his mere presence."</p>
+    <h4>The Defiance of the Afghans</h4>
+    <p>"During the height of the Sikh Empire, when even the mighty Afghans had to pay monthly tribute to the Khalsa Raj, one incident tested the steel of the empire's might. A group of 500 armed Afghan tribesmen, along with their local chieftains, grew rebellious. Filled with arrogance and delusion, they decided to refuse paying tax to the Sikh Empire. They sent a letter to Hari Singh Nalwa, taunting him: 'If you are truly your father's son, then come alone and collect the tax from us.'"</p>
+    <p>The piece is a popular narrative retelling rather than original historical research — told in the register of legend, in keeping with how Hari Singh Nalwa is remembered in Sikh oral history and popular art.</p>
+  `
+},
+{
+  id:'lyall-lineage', cat:'history', index:'Y-02',
+  title:'Lyall: A Norse-Wolf Thread Through Clan Sinclair',
+  byline:'Research notes',
+  cite:'Compiled notes on surname etymology and Scottish clan history',
+  meta:'Genealogical & etymological notes',
+  excerpt:'The surname Lyall traces to the Old Norse name Liulfr, rooted in \u00falfr, "wolf," and is recorded historically as a sept of Clan Sinclair — a partial family thread the author carries.',
+  body:`
+    <p>The Lyall name carries its own quiet mythology — a Scottish surname descended from the Old Norse given name Liulfr, itself rooted in úlfr, "wolf." After the Viking settlement of Scotland, the name underwent the usual sound changes as it adapted into local speech, eventually settling into the form Lyall. Some genealogical sources offer a second, competing reading — as a patronymic of "Lionel" (via the nickname Lyell) or a hypocoristic of "Lyon" — but the Norse-wolf derivation is the one most consistently cited.</p>
+    <h4>A sept of Clan Sinclair</h4>
+    <p>Lyall is recorded historically as a sept of Clan Sinclair — meaning families bearing the name were considered part of the broader Sinclair kin-group. Sept ties are formed in various ways across Scottish clan history — sometimes through marriage or alliance, sometimes through direct blood descent — and that connection threads Lyall into the Norman-Norse nobility of the Earls of Orkney and Caithness, and by extension into the legend-thick orbit of Rosslyn Chapel.</p>
+    <p>The author traces his own ancestral bloodline to Clan Sinclair through the Lyall line — a real thread of family history, and a fitting undercurrent for an archive built on the deep structures beneath inherited stories.</p>
+    <div class="note-box">Editorial note: surname etymology is genuinely contested across sources — the Norse "wolf" origin and the "Lionel/Lyon" origin both appear in reputable genealogical references. Presented here as the author's own family history and compiled research notes, not an independently verified genealogical record.</div>
+  `
+},
+
+];
+
+/* ============ RENDER LOGIC ============ */
+let activeCat = 'all';
+let query = '';
+
+function countFor(catId){
+  if(catId==='all') return ENTRIES.length;
+  return ENTRIES.filter(e=>e.cat===catId).length;
+}
+
+function renderNav(){
+  const nav = document.getElementById('drawerNav');
+  nav.innerHTML = '<div class="drawer-title">CARD CATALOG</div>' + CATEGORIES.map(c => `
+    <button class="tab ${c.id===activeCat?'active':''}" style="--tab-color:${c.color}" data-cat="${c.id}">
+      <span class="swatch" style="--tab-color:${c.color}"></span>
+      <span>${c.label}</span>
+      <span class="count">${countFor(c.id)}</span>
+    </button>
+  `).join('');
+  nav.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ activeCat = btn.dataset.cat; renderAll(); });
+  });
+}
+
+function renderLegend(){
+  const bar = document.getElementById('legendBar');
+  bar.innerHTML = CATEGORIES.filter(c=>c.id!=='all').map(c=>`
+    <span class="item"><span class="dot" style="background:${c.color}"></span>${STAMP_TEXT[c.id]}</span>
+  `).join('');
+}
+
+function matchesQuery(entry, q){
+  if(!q) return true;
+  const hay = (entry.title+' '+entry.byline+' '+entry.excerpt+' '+entry.cite).toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+
+function renderCards(){
+  const grid = document.getElementById('cardGrid');
+  const empty = document.getElementById('emptyState');
+  let list = ENTRIES.filter(e => (activeCat==='all' || e.cat===activeCat) && matchesQuery(e, query));
+
+  const cat = CATEGORIES.find(c=>c.id===activeCat);
+  document.getElementById('sectionTitle').textContent = cat.label;
+  document.getElementById('sectionDesc').textContent = cat.id==='all'
+    ? 'Every stamped item in the archive. Each entry carries a stamp marking what kind of claim it is — verified research, speculative theory, myth, fiction, opinion, or personal reflection — so nothing is mistaken for something it isn\u2019t.'
+    : cat.desc;
+
+  if(list.length===0){
+    grid.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+
+  grid.innerHTML = list.map(e => {
+    const color = CATEGORIES.find(c=>c.id===e.cat).color;
+    return `
+    <article class="card" tabindex="0" data-id="${e.id}" style="--stamp-color:${color}">
+      <span class="stamp" style="--stamp-color:${color}">${STAMP_TEXT[e.cat]}</span>
+      <span class="index mono">${e.index}</span>
+      <h3>${e.title}</h3>
+      <div class="byline">${e.byline}</div>
+      <div class="excerpt">${e.excerpt}</div>
+      <div class="meta-row"><span>${e.meta}</span></div>
+    </article>`;
+  }).join('');
+
+  grid.querySelectorAll('.card').forEach(card=>{
+    const open = ()=> openDetail(card.dataset.id);
+    card.addEventListener('click', open);
+    card.addEventListener('keypress', (ev)=>{ if(ev.key==='Enter') open(); });
+  });
+}
+
+function renderAll(){ renderNav(); renderCards(); }
+
+function openDetail(id){
+  const e = ENTRIES.find(x=>x.id===id);
+  if(!e) return;
+  const color = CATEGORIES.find(c=>c.id===e.cat).color;
+  const card = document.getElementById('detailCard');
+  card.style.setProperty('--stamp-color', color);
+  card.innerHTML = `
+    <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+    <span class="detail-stamp">${STAMP_TEXT[e.cat]}</span>
+    <h2>${e.title}</h2>
+    <div class="byline">${e.byline}</div>
+    <div class="cite">${e.cite} — ${e.meta}</div>
+    <div class="detail-body">${e.body}</div>
+  `;
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('closeBtn').addEventListener('click', closeDetail);
+}
+function closeDetail(){ document.getElementById('overlay').classList.remove('open'); }
+
+document.getElementById('overlay').addEventListener('click', (ev)=>{
+  if(ev.target.id==='overlay') closeDetail();
+});
+document.addEventListener('keydown', (ev)=>{
+  if(ev.key==='Escape') closeDetail();
+});
+document.getElementById('searchInput').addEventListener('input', (ev)=>{
+  query = ev.target.value;
+  renderCards();
+});
+
+renderLegend();
+renderAll();
+</script>
+</body>
+</html>
